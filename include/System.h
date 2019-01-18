@@ -17,6 +17,7 @@ public:
     System();
     ~System();
     void Run();
+    void init();
     void Update(const cv::Mat &imgBW, const cv::Mat &imgRGB);
 
 private:

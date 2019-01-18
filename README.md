@@ -1,4 +1,4 @@
-# slam-cg
+# slam_cg
 
 SLAM source code using OpenCV,Eigen,Sophus,Pangolin libraries.
 

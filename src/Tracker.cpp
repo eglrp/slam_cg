@@ -22,9 +22,8 @@ void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 
     mnFrame++;
 
-    if(mbDraw)
-    {
-        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, GS::RGB(1,0,1), 1.0f);
+    if(mbDraw) {
+        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, GS::RGB(1, 0, 1), 1.0f);
     }
 
     TrackForInitialMap();

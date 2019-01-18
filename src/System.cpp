@@ -11,12 +11,26 @@
 #include "MapMaker.h"
 #include "Tracker.h"
 
-System::System()
-{
+System::System() {
     mpJsonConfig = new JsonConfig("../Config.json");
-    mpPangolinWindow = new GLWindowPangolin("PTAM-GS",GS::Size(640,480));
-    mpVideoSource = new ImageDataSet("/home/chenguang/projects/datasets/rgbd_dataset_freiburg1_xyz",
-                                       "/home/chenguang/projects/datasets/rgbd_dataset_freiburg1_xyz/associate.txt");
+}
+
+void System::init() {
+    mpPangolinWindow = new GLWindowPangolin("slam_cg",GS::Size(640,480));
+
+    int n_data_type = mpJsonConfig->GetInt("Data.Type");
+    switch (n_data_type) {
+        case 0:
+            mpVideoSource = new VideoSourceOCV(mpJsonConfig->GetInt("Data.CamIdx"));
+            break;
+        case 1:
+        {
+            std::string str_dataset_dir = mpJsonConfig->GetString("Data.DatasetDir");
+            mpVideoSource = new ImageDataSet(str_dataset_dir, str_dataset_dir + "/associate.txt");
+        }
+            break;
+    }
+
     mpCamera = new ATANCamera();
     mpMapMaker = new MapMaker(*mpCamera);
     mpTracker = new Tracker(mpJsonConfig, mpPangolinWindow, *mpMapMaker);
@@ -24,15 +38,15 @@ System::System()
     mbDone = false;
 }
 
-void System::Run()
-{
-    if(GS::RET_FAILED == mpJsonConfig->Init())
+void System::Run() {
+    if (GS::RET_FAILED == mpJsonConfig->Init())
         return;
 
-    cv::Mat imgRGB,imgBW;
-    while(!mbDone)
-    {
-        if(GS::RET_FAILED == mpVideoSource->GetFrameRGBBW(imgRGB,imgBW)) {
+    init();
+
+    cv::Mat imgRGB, imgBW;
+    while (!mbDone) {
+        if (GS::RET_FAILED == mpVideoSource->GetFrameRGBBW(imgRGB, imgBW)) {
             std::cerr << "mpVideoSource->GetFrameRGBBW failed !!!" << std::endl;
             break;
         }
@@ -44,7 +58,7 @@ void System::Run()
         mpPangolinWindow->Clear();
         mpPangolinWindow->DrawTexture2DGray(imgBW);
 
-        Update(imgBW,imgRGB);
+        Update(imgBW, imgRGB);
 
         mpPangolinWindow->RenderTextureToViewport();
         mpPangolinWindow->EndFrame();
@@ -53,13 +67,11 @@ void System::Run()
     }
 }
 
-void System::Update(const cv::Mat &imgBW, const cv::Mat &imgRGB)
-{
+void System::Update(const cv::Mat &imgBW, const cv::Mat &imgRGB) {
     mpTracker->TrackFrame(imgBW, true);
 }
 
-System::~System()
-{
+System::~System() {
     DELETE_NEW_OBJ(mpTracker)
     DELETE_NEW_OBJ(mpMapMaker)
     DELETE_NEW_OBJ(mpCamera)

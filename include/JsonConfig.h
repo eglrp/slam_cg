@@ -8,38 +8,29 @@
 
 #include "Common.h"
 
-class JsonConfig
-{
+class JsonConfig {
 
 public:
-    JsonConfig(const std::string &strFilePath):mFilePath(strFilePath)
-    {
-    }
+    JsonConfig(const std::string &strFilePath) : mFilePath(strFilePath) {}
 
-    inline int Init()
-    {
+    inline int Init() {
         mFile.open(mFilePath);
-        if(!mFile.is_open())
-        {
+        if (!mFile.is_open()) {
             return GS::RET_FAILED;
-        }
-        else
-        {
+        } else {
             Json::Reader reader;
-            if(reader.parse(mFile,mRootValue))
+            if (reader.parse(mFile, mRootValue))
                 return GS::RET_SUCESS;
             else
                 return GS::RET_FAILED;
         }
     }
 
-    inline int GetInt(const std::string &strKey)
-    {
+    inline int GetInt(const std::string &strKey) {
         return mRootValue[strKey].asInt();
     }
 
-    inline std::string GetString(const std::string &strKey)
-    {
+    inline std::string GetString(const std::string &strKey) {
         return mRootValue[strKey].asString();
     }
 

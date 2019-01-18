@@ -1,4 +1,7 @@
 {
-	"Tracker.MiniPatchMaxSSD": 100000,
-    "Tracker.MaxInitialTrails": 1000
+  "Data.Type": 1,
+  "Data.DatasetDir": "/home/cg/dev_sdb/datasets/TUM/RGBD-SLAM-Dataset/rgbd_dataset_freiburg1_xyz",
+  "Data.CamIdx": 0,
+  "Tracker.MiniPatchMaxSSD": 100000,
+  "Tracker.MaxInitialTrails": 1000
 }
