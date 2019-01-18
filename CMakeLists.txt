@@ -1,4 +1,4 @@
-project(PTAM-CG)
+project(slam_cg)
 cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -7,7 +7,6 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall -g")
 ################ Dependencies ################
 
 # OpenCV
-set( OpenCV_DIR "/opt/opencv_320_r/share/OpenCV" )
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_imgcodecs opencv_imgproc opencv_highgui opencv_features2d opencv_calib3d)
 if( OpenCV_FOUND )
     include_directories( ${OpenCV_INCLUDE_DIRS} )
@@ -31,14 +30,15 @@ endif()
 # Sophus
 find_package( Sophus REQUIRED sophus )
 if( Sophus_FOUND )
-    include_directories( /opt/Sophus/include/ )
+    include_directories( ${Sophus_INCLUDE_DIRS} )
+    link_libraries( ${Sophus_LIBRARIES} )
 endif()
 
 ## JsonCpp
 find_package( PkgConfig )
 pkg_check_modules( JSONCPP REQUIRED jsoncpp )
 if ( JSONCPP_FOUND )
-    include_directories( /opt/jsoncpp/include )
+    include_directories( ${JSONCPP_INCLUDE_DIRS} )
     link_libraries( ${JSONCPP_LIBRARIES} )
 endif ()
 

@@ -33,4 +33,5 @@ private:
     std::vector<std::string> mvstrImageFilenamesD;
     std::vector<double> mvTimestamps;
 };
+
 #endif
