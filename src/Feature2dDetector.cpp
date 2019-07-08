@@ -1,4 +1,4 @@
-#include "Common.h"
+#include "types.h"
 #include "ImgProc.h"
 
 #include <opencv2/imgproc/imgproc.hpp>
@@ -12,7 +12,7 @@ int Feature2dDetector::DetectFASTCorners(
 {
     if(!srcImage.data)
     {
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
     }
     cv::Mat srcGrayImage;
     if(3 == srcImage.channels())
@@ -36,17 +36,17 @@ int Feature2dDetector::DetectFASTCorners(
     cv::drawKeypoints(srcGrayImage,vecKeyPts,srcGrayImageFASTCorners,cv::Scalar(0,255,0),cv::DrawMatchesFlags::DEFAULT);
     cv::imwrite("srcGrayImageFASTCorners.bmp",srcGrayImageFASTCorners);
 #endif
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int Feature2dDetector::FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, double &dScore, unsigned int nHalfBoxSize)
 {
     if(!image.data)
     {
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
     }
     if(!IsInImageWithBorder(image,ptCenter,nHalfBoxSize+1,nHalfBoxSize+1))
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     double dXX = 0;
     double dYY = 0;
@@ -77,5 +77,5 @@ int Feature2dDetector::FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point
 
     dScore = 0.5 * (dXX + dYY - sqrt( (dXX + dYY) * (dXX + dYY) - 4 * (dXX * dYY - dXY * dXY) ));//smaller eigenvalue
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }

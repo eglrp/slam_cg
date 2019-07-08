@@ -1,10 +1,10 @@
-#include "Common.h"
+#include "types.h"
 #include "ImgProc.h"
 
 int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos)
 {
     if(!IsInImageWithBorder(img, ptPos, mSizePatch.width/2+1, mSizePatch.height/2+1))
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     cv::Rect rectROI;
     rectROI.width = mSizePatch.width;
@@ -13,7 +13,7 @@ int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos)
     rectROI.y = ptPos.y-rectROI.height/2;
     mImgMiniPatch = img(rectROI);
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 // Find a patch by searching at FAST corners in an input image
@@ -53,7 +53,7 @@ int MiniPatch::FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange, std::vect
             break;
 
         int nSSD = 0;
-        if(GS::RET_FAILED == SSDAtPoint(img, *i, mImgMiniPatch, nSSD))
+        if(cg::RET_FAILED == SSDAtPoint(img, *i, mImgMiniPatch, nSSD))
             nSSD = nMaxSSD + 1;
         if(nSSD < nBestSSD)
         {
@@ -64,10 +64,10 @@ int MiniPatch::FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange, std::vect
     if(nBestSSD < nMaxSSD)
     {
         ptPos = ptBest;
-        return GS::RET_SUCESS;
+        return cg::RET_SUCESS;
     }
     else
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 }
 
 

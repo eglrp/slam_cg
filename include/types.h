@@ -2,7 +2,7 @@
 #ifndef __Common_H
 #define __Common_H
 
-namespace GS
+namespace cg
 {
 
 #define DELETE_NEW_OBJ(obj) if(NULL!=obj){delete obj;obj=NULL;}

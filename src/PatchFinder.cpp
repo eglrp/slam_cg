@@ -9,7 +9,7 @@ int PatchFinder::MakeTemplateCoarseNoWarp(const KeyFrame &keyframe, unsigned int
     if(!IsInImageWithBorder(img, ptLevelPos, mSizePatch.width/2+1, mSizePatch.height/2+1))
     {
         mbTemplateBad = true;
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
     }
     mbTemplateBad = false;
 
@@ -17,7 +17,7 @@ int PatchFinder::MakeTemplateCoarseNoWarp(const KeyFrame &keyframe, unsigned int
 
     SumOfPixels(mImgMiniPatch, mnTemplateSum, mnTemplateSumSq);
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 // Makes an inverse composition template out of the coarse template.

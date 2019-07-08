@@ -1,4 +1,4 @@
-#include "Common.h"
+#include "types.h"
 #include "ImgProc.h"
 
 #include <vector>
@@ -12,7 +12,7 @@ bool ImgProc::IsInImageWithBorder(const cv::Mat &image, const cv::Point2i &pt, i
 int ImgProc::HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst)
 {
     if(1 != imgSrc.channels())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
     imgDst.create(imgSrc.rows/2,imgSrc.cols/2,CV_8UC1);
     const unsigned char *top = imgSrc.data;
     const unsigned char *bottom = top + imgSrc.cols;
@@ -32,16 +32,16 @@ int ImgProc::HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst)
         top += skip;
         bottom += skip;
     }
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int ImgProc::SumOfPixels(const cv::Mat &img, int &nSum, int &nSumSq)
 {
     if(img.empty())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     if(1 != img.channels())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     nSum = 0;
     nSumSq = 0;
@@ -56,7 +56,7 @@ int ImgProc::SumOfPixels(const cv::Mat &img, int &nSum, int &nSumSq)
         }
     }
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int ImgProc::SSDAtPoint(const cv::Mat &img, const cv::Point2i &ptPos, const cv::Mat &imgPatch, int &nSSD)
@@ -65,7 +65,7 @@ int ImgProc::SSDAtPoint(const cv::Mat &img, const cv::Point2i &ptPos, const cv::
     unsigned int patchH = imgPatch.rows;
 
     if(!IsInImageWithBorder(img, ptPos, patchW/2+1, patchH/2+1))
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     cv::Point2i ptImgBase(ptPos.x-patchW/2, ptPos.y-patchH/2);
 
@@ -81,6 +81,6 @@ int ImgProc::SSDAtPoint(const cv::Mat &img, const cv::Point2i &ptPos, const cv::
         }
     }
     nSSD = nSumSqDiff;
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 

@@ -2,7 +2,7 @@
 #ifndef __GLWindowPangolin_H
 #define __GLWindowPangolin_H
 
-#include "Common.h"
+#include "types.h"
 
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@ class GLWindowPangolin
 {
 public:
     GLWindowPangolin(){}
-    GLWindowPangolin(const std::string title, GS::Size sizeWindow);
+    GLWindowPangolin(const std::string title, cg::Size sizeWindow);
 
     void SetupViewport();
     void SetupVideoOrtho();
@@ -27,9 +27,9 @@ public:
     void DrawTexture2DRGB(const cv::Mat &imgRGB);
     void RenderTextureToViewport();
 
-    void DrawPoints2D(const std::vector<cv::Point2i> &points, GS::RGB rgb, float size);
-    void DrawLines(const cv::Point2i &ptStart, GS::RGB rgbStart,
-                   const cv::Point2i &ptEnd  , GS::RGB rgbEnd,
+    void DrawPoints2D(const std::vector<cv::Point2i> &points, cg::RGB rgb, float size);
+    void DrawLines(const cv::Point2i &ptStart, cg::RGB rgbStart,
+                   const cv::Point2i &ptEnd  , cg::RGB rgbEnd,
                    float width);
     void DrawOrigeAxis();
 
@@ -37,9 +37,9 @@ public:
     inline void EndFrame(){ pangolin::FinishFrame(); }
 
 private:
-    GS::Size mSizeWin;
-    GS::Size mSizeVideo;
-    GS::RGB mRGB;
+    cg::Size mSizeWin;
+    cg::Size mSizeVideo;
+    cg::RGB mRGB;
     pangolin::GlTexture mTexture;
 };
 #endif

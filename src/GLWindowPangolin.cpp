@@ -1,6 +1,6 @@
 #include "GLWindowPangolin.h"
 
-GLWindowPangolin::GLWindowPangolin(const std::string title, GS::Size sizeWindow):
+GLWindowPangolin::GLWindowPangolin(const std::string title, cg::Size sizeWindow):
     mSizeWin(sizeWindow),
     mSizeVideo(sizeWindow)
 {
@@ -62,7 +62,7 @@ void GLWindowPangolin::RenderTextureToViewport()
     mTexture.RenderToViewport(true);
 }
 
-void GLWindowPangolin::DrawPoints2D(const std::vector<cv::Point2i> &points, GS::RGB rgb, float size)
+void GLWindowPangolin::DrawPoints2D(const std::vector<cv::Point2i> &points, cg::RGB rgb, float size)
 {
     if(points.empty())
     {
@@ -77,8 +77,8 @@ void GLWindowPangolin::DrawPoints2D(const std::vector<cv::Point2i> &points, GS::
 }
 
 void GLWindowPangolin::DrawLines(
-        const cv::Point2i &ptStart, GS::RGB rgbStart,
-        const cv::Point2i &ptEnd  , GS::RGB rgbEnd,
+        const cv::Point2i &ptStart, cg::RGB rgbStart,
+        const cv::Point2i &ptEnd  , cg::RGB rgbEnd,
         float width)
 {
     glLineWidth(width);

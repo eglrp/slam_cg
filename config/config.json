@@ -1,0 +1,7 @@
+{
+  "Data.Type": 1,
+  "Data.DatasetDir": "/home/cg/projects/datasets/rgbd_dataset_freiburg1_xyz",
+  "Data.CamIdx": 1,
+  "Tracker.MiniPatchMaxSSD": 100000,
+  "Tracker.MaxInitialTrails": 1000
+}

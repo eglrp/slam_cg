@@ -23,7 +23,7 @@ void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
     mnFrame++;
 
     if(mbDraw) {
-        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, GS::RGB(1, 0, 1), 1.0f);
+        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, cg::RGB(1, 0, 1), 1.0f);
     }
 
     TrackForInitialMap();
@@ -106,32 +106,32 @@ int Tracker::TrailTracking_Advance()
         cv::Point2i ptStart = trail.ptCurrentPos;
         cv::Point2i ptEnd = ptStart;
         int nFound = trail.mPatch.FindPatch(ptEnd, lCurrentFrame.im, 10, lCurrentFrame.vCorners, nMaxSSD);
-        if(nFound == GS::RET_SUCESS)
+        if(nFound == cg::RET_SUCESS)
         {
             BackwardsPatch.SampleFromImage(lCurrentFrame.im, ptEnd);
             cv::Point2i ptBackWardsFound = ptEnd;
             nFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners, nMaxSSD);
             cv::Point2i diffPts = ptBackWardsFound - ptStart;
             if(diffPts.dot(diffPts) > 2)
-                nFound = GS::RET_FAILED;
+                nFound = cg::RET_FAILED;
             trail.ptCurrentPos = ptEnd;
             nGoodTrails++;
         }
         if(mbDraw)
         {
-            GS::RGB rgbStart, rgbEnd;
-            if(nFound == GS::RET_SUCESS)
+            cg::RGB rgbStart, rgbEnd;
+            if(nFound == cg::RET_SUCESS)
             {
-                rgbStart = GS::RGB(1,1,0);
-                rgbEnd   = GS::RGB(1,0,0);
+                rgbStart = cg::RGB(1,1,0);
+                rgbEnd   = cg::RGB(1,0,0);
             }
             else
             {
-                rgbStart = rgbEnd = GS::RGB(0,1,1);
+                rgbStart = rgbEnd = cg::RGB(0,1,1);
             }
             mpPangolinWindow->DrawLines(trail.ptInitialPos, rgbStart, trail.ptCurrentPos, rgbEnd, 2.0f);
         }
-        if(nFound == GS::RET_FAILED)
+        if(nFound == cg::RET_FAILED)
         {
             mlTrails.erase(i);
         }

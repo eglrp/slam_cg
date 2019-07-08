@@ -5,7 +5,7 @@
 #include <opencv2/core/types.hpp>
 #include <opencv2/core/mat.hpp>
 
-#include "Common.h"
+#include "types.h"
 
 class ImgProc
 {
@@ -28,8 +28,8 @@ public:
 class MiniPatch : public ImgProc
 {
 public:
-    MiniPatch():mSizePatch(GS::Size(9,9)){}
-    MiniPatch(GS::Size size):mSizePatch(size){}
+    MiniPatch():mSizePatch(cg::Size(9,9)){}
+    MiniPatch(cg::Size size):mSizePatch(size){}
     cv::Mat mImgMiniPatch;//Original pixels
 
     int SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos);
@@ -37,7 +37,7 @@ public:
                   int nMaxSSD = 9999, std::vector<int> *pvRowLUT = NULL);
 
 protected:
-    GS::Size mSizePatch;
+    cg::Size mSizePatch;
 };
 
 #endif

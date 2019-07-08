@@ -73,7 +73,6 @@ Thumbs.db
 
 3rdparty/
 CMakeLists.txt.user
-build-PTAM-GS-Desktop-Default/
 
 .idea/
 *-build-*

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <set>
 
-#include "Common.h"
+#include "types.h"
 #include "MathUtility.h"
 #include "Homography.h"
 
@@ -47,7 +47,7 @@ bool MapMaker::InitFromStereo(
 
     Homography homo;
     Sophus::SE3 se3_homo;
-    if (GS::RET_FAILED == homo.Compute(vMatches, se3_homo))
+    if (cg::RET_FAILED == homo.Compute(vMatches, se3_homo))
         return false;
 
     std::cout << "se3_homo: \n" << se3_homo.matrix() << std::endl;

@@ -4,30 +4,30 @@
 #include <algorithm>
 #include <Eigen/SVD>
 
-#include "Common.h"
+#include "types.h"
 
 int Homography::Compute(const std::vector<HomographyMatch> &vMatches, Sophus::SE3 &se3SecondFromFirst, double dMaxPixelError)
 {
     mdMaxPixelErrorSquared = dMaxPixelError * dMaxPixelError;
 
     if(vMatches.empty())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     unsigned int nSizeMatches = vMatches.size();
 
     if(nSizeMatches < 4)
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     //get mm3BestHomography
     if(nSizeMatches < 10)
     {
-        if(GS::RET_FAILED == HomographyFromMatches(vMatches,mm3BestHomography))
-            return GS::RET_FAILED;
+        if(cg::RET_FAILED == HomographyFromMatches(vMatches,mm3BestHomography))
+            return cg::RET_FAILED;
     }
     else
     {
-        if(GS::RET_FAILED == HomographyFromMatchesByMLESAC(vMatches,mm3BestHomography))
-            return GS::RET_FAILED;
+        if(cg::RET_FAILED == HomographyFromMatchesByMLESAC(vMatches,mm3BestHomography))
+            return cg::RET_FAILED;
     }
 
     std::cout << "mm3BestHomography: \n" << mm3BestHomography << std::endl;
@@ -47,30 +47,30 @@ int Homography::Compute(const std::vector<HomographyMatch> &vMatches, Sophus::SE
 
     //decompose mm3BestHomography
     std::vector<HomographyDecomposition> vHomographyDecompositions;
-    if(GS::RET_FAILED == DecomposeHomography(mm3BestHomography, vHomographyDecompositions))
-        return GS::RET_FAILED;
+    if(cg::RET_FAILED == DecomposeHomography(mm3BestHomography, vHomographyDecompositions))
+        return cg::RET_FAILED;
 
     if(vHomographyDecompositions.size() != 8)
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     //get the best one from 8 vHomographyDecompositions
-    if(GS::RET_FAILED == ChooseBestDecomposition(vMatches, vMatchesInliers, vHomographyDecompositions))
-        return GS::RET_FAILED;
+    if(cg::RET_FAILED == ChooseBestDecomposition(vMatches, vMatchesInliers, vHomographyDecompositions))
+        return cg::RET_FAILED;
 
     se3SecondFromFirst = vHomographyDecompositions[0].se3SecondFromFirst;
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int Homography::HomographyFromMatches(const std::vector<HomographyMatch> &vMatches, Eigen::Matrix3d &m3Homography)
 {
     if(vMatches.empty())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     unsigned int nSizeMatches = vMatches.size();
 
     if(nSizeMatches < 4)
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     int nRows = 2 * nSizeMatches;
     if(nRows < 9)
@@ -116,18 +116,18 @@ int Homography::HomographyFromMatches(const std::vector<HomographyMatch> &vMatch
     m3Homography.row(1) = v9V.segment(3,3);
     m3Homography.row(2) = v9V.segment(6,3);
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int Homography::HomographyFromMatchesByMLESAC(const std::vector<HomographyMatch> &vMatches, Eigen::Matrix3d &m3Homography, unsigned short nRansac)
 {
     if(vMatches.empty() || 0==nRansac)
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     unsigned int nSizeMatches = vMatches.size();
 
     if(nSizeMatches < 4)
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     double dErrorBest = 999999999999999999.9;
     unsigned int indices[4]={0};
@@ -157,7 +157,7 @@ int Homography::HomographyFromMatchesByMLESAC(const std::vector<HomographyMatch>
         }
 
         Eigen::Matrix3d m3Homo;
-        if(GS::RET_SUCESS == HomographyFromMatches(vMatchesMini,m3Homo))
+        if(cg::RET_SUCESS == HomographyFromMatches(vMatchesMini,m3Homo))
         {
             double dErrorSum = 0.0;
             for(unsigned int i=0;i<nSizeMatches;++i)
@@ -177,7 +177,7 @@ int Homography::HomographyFromMatchesByMLESAC(const std::vector<HomographyMatch>
         }
     }
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int Homography::DecomposeHomography(const Eigen::Matrix3d &m3Homography, std::vector<HomographyDecomposition> &vHomographyDecompositions)
@@ -206,7 +206,7 @@ int Homography::DecomposeHomography(const Eigen::Matrix3d &m3Homography, std::ve
     if(nCase != 1)
     {
         //Homographyinit: This motion case is not implemented or is degenerate. Try again
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
     }
 
     double x1_PM;
@@ -291,7 +291,7 @@ int Homography::DecomposeHomography(const Eigen::Matrix3d &m3Homography, std::ve
         vHomographyDecompositions[i].se3SecondFromFirst = se3SecondFromFirst;
     }
 
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }
 
 int Homography::ChooseBestDecomposition(
@@ -300,7 +300,7 @@ int Homography::ChooseBestDecomposition(
         std::vector<HomographyDecomposition> &vHomographyDecompositions)
 {
     if(8 != vHomographyDecompositions.size())
-        return GS::RET_FAILED;
+        return cg::RET_FAILED;
 
     for(unsigned char i=0; i<vHomographyDecompositions.size(); ++i)
     {
@@ -376,5 +376,5 @@ int Homography::ChooseBestDecomposition(
         else
             vHomographyDecompositions.erase(vHomographyDecompositions.begin());
     }
-    return GS::RET_SUCESS;
+    return cg::RET_SUCESS;
 }

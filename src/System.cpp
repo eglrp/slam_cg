@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "Common.h"
+#include "types.h"
 #include "JsonConfig.h"
 #include "GLWindowPangolin.h"
 #include "VideoSource.h"
@@ -12,11 +12,11 @@
 #include "Tracker.h"
 
 System::System() {
-    mpJsonConfig = new JsonConfig("../Config.json");
+    mpJsonConfig = new JsonConfig("../config/config.json");
 }
 
 void System::init() {
-    mpPangolinWindow = new GLWindowPangolin("slam_cg",GS::Size(640,480));
+    mpPangolinWindow = new GLWindowPangolin("slam_cg",cg::Size(640,480));
 
     int n_data_type = mpJsonConfig->GetInt("Data.Type");
     switch (n_data_type) {
@@ -39,14 +39,14 @@ void System::init() {
 }
 
 void System::Run() {
-    if (GS::RET_FAILED == mpJsonConfig->Init())
+    if (cg::RET_FAILED == mpJsonConfig->Init())
         return;
 
     init();
 
     cv::Mat imgRGB, imgBW;
     while (!mbDone) {
-        if (GS::RET_FAILED == mpVideoSource->GetFrameRGBBW(imgRGB, imgBW)) {
+        if (cg::RET_FAILED == mpVideoSource->GetFrameRGBBW(imgRGB, imgBW)) {
             std::cerr << "mpVideoSource->GetFrameRGBBW failed !!!" << std::endl;
             break;
         }

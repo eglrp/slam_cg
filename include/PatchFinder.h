@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-#include "Common.h"
+#include "types.h"
 #include "ImgProc.h"
 #include "KeyFrame.h"
 #include "MapPoint.h"
@@ -11,7 +11,7 @@
 class PatchFinder : public MiniPatch
 {
 public:
-    PatchFinder():MiniPatch(GS::Size(8,8)){}
+    PatchFinder():MiniPatch(cg::Size(8,8)){}
     ~PatchFinder(){}
 
     inline int MakeTemplateCoarseNoWarp(const KeyFrame &keyframe, unsigned int level, cv::Point2i ptLevelPos);

@@ -6,7 +6,7 @@
 
 #include <json/json.h>
 
-#include "Common.h"
+#include "types.h"
 
 class JsonConfig {
 
@@ -16,13 +16,13 @@ public:
     inline int Init() {
         mFile.open(mFilePath);
         if (!mFile.is_open()) {
-            return GS::RET_FAILED;
+            return cg::RET_FAILED;
         } else {
             Json::Reader reader;
             if (reader.parse(mFile, mRootValue))
-                return GS::RET_SUCESS;
+                return cg::RET_SUCESS;
             else
-                return GS::RET_FAILED;
+                return cg::RET_FAILED;
         }
     }
 

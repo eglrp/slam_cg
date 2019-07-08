@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <Eigen/SVD>
 
-#include "Common.h"
+#include "types.h"
 #include "ATANCamera.h"
 
 TEST(Homography,HomographyFromMatches)
@@ -39,7 +39,7 @@ TEST(Homography,HomographyFromMatches)
 
     Homography homo;
     Eigen::Matrix3d m3Homography;
-    if(GS::RET_SUCESS == homo.HomographyFromMatches(vMatches, m3Homography))
+    if(cg::RET_SUCESS == homo.HomographyFromMatches(vMatches, m3Homography))
     {
         std::cout << "m3Homography: \n" << m3Homography << std::endl;
     }

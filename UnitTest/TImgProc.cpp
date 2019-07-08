@@ -1,4 +1,4 @@
-#include "Common.h"
+#include "types.h"
 #include "ImgProc.h"
 
 #include <iostream>
@@ -16,7 +16,7 @@ TEST(ImgProc,HalfSample)
     cv::Mat dstImg;
     cv::Mat imgBW;
     cv::cvtColor(srcImage,imgBW, CV_BGR2GRAY);
-    ASSERT_EQ(ImgProc::HalfSample(imgBW,dstImg), GS::RET_SUCESS);
+    ASSERT_EQ(ImgProc::HalfSample(imgBW,dstImg), cg::RET_SUCESS);
     cv::imwrite("HalfSample.bmp",dstImg);
     ASSERT_EQ(imgBW.cols/2, dstImg.cols);
     ASSERT_EQ(imgBW.rows/2, dstImg.rows);
@@ -30,7 +30,7 @@ TEST(Feature2dDetector,DetectFASTCorners)
 {
     std::vector<cv::Point2i> vecKeyPoints;
     int ret = Feature2dDetector::DetectFASTCorners(srcImage, vecKeyPoints, 10, true);
-    ASSERT_EQ(ret, GS::RET_SUCESS);
+    ASSERT_EQ(ret, cg::RET_SUCESS);
 }
 
 TEST(Feature2dDetector,FindShiTomasiScoreAtPoint)
@@ -39,7 +39,7 @@ TEST(Feature2dDetector,FindShiTomasiScoreAtPoint)
     cv::cvtColor(srcImage,imgBW, CV_BGR2GRAY);
     double score = 0;
     int ret = Feature2dDetector::FindShiTomasiScoreAtPoint(imgBW, cv::Point2i(215,278), score, 3);
-    ASSERT_EQ(ret, GS::RET_SUCESS);
+    ASSERT_EQ(ret, cg::RET_SUCESS);
     std::cout << "score: " << score << std::endl;
 }
 
@@ -53,7 +53,7 @@ TEST(MiniPatch,SSDAtPoint)
     cv::cvtColor(srcImage2,imgBW2, CV_BGR2GRAY);
 
     MiniPatch miniPatch;
-    ASSERT_EQ(GS::RET_SUCESS,miniPatch.SampleFromImage(imgBW1,cv::Point2i(147,346)));
+    ASSERT_EQ(cg::RET_SUCESS,miniPatch.SampleFromImage(imgBW1,cv::Point2i(147,346)));
     int nSSD = 0;
     miniPatch.SSDAtPoint(imgBW2, cv::Point2i(137,336), miniPatch.mImgMiniPatch, nSSD);
     std::cout << "nSSD: " << nSSD << std::endl;

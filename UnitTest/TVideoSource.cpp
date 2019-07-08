@@ -1,4 +1,4 @@
-#include "Common.h"
+#include "types.h"
 #include "VideoSource.h"
 
 #include <gtest/gtest.h>
@@ -9,7 +9,7 @@ TEST(ImageDataSet,ReadImagesAssociationFile)
                                                 "/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
     cv::Mat imgRGB, imgBW;
     int ret = videoSource->GetFrameRGBBW(imgRGB, imgBW);
-    ASSERT_TRUE(ret==GS::RET_SUCESS);
+    ASSERT_TRUE(ret==cg::RET_SUCESS);
     if(videoSource!=NULL)
     {
         delete videoSource;
