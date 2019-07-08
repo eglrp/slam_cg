@@ -1,6 +1,7 @@
 #SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+
 ADD_EXECUTABLE( UnitTest.run
     gtest_main.cpp
     TVideoSource.cpp
@@ -10,5 +11,6 @@ ADD_EXECUTABLE( UnitTest.run
     THomography.cpp
     TMathUtility.cpp
     TJsonConfig.cpp
-    ${SRC_LIST_PTAM} )
+    ${SRC_LIST_SLAM_CG} )
+
 TARGET_LINK_LIBRARIES(UnitTest.run gtest pthread)

@@ -13,12 +13,12 @@ if( OpenCV_FOUND )
     link_libraries( ${OpenCV_LIBS} )
 endif()
 
-# GLEW
-find_package( GLEW REQUIRED )
-if ( GLEW_FOUND )
-    include_directories( ${GLEW_INCLUDE_DIRS} )
-    link_libraries( ${GLEW_LIBRARIES} )
-endif()
+## GLEW
+#find_package( GLEW REQUIRED )
+#if ( GLEW_FOUND )
+#    include_directories( ${GLEW_INCLUDE_DIRS} )
+#    link_libraries( ${GLEW_LIBRARIES} )
+#endif()
 
 # Pangolin
 find_package( Pangolin )
@@ -43,9 +43,9 @@ if ( JSONCPP_FOUND )
 endif ()
 
 
-################ PTAM-GS ################
+################ slam_cg ################
 include_directories(${PROJECT_SOURCE_DIR}/include)
-set( SRC_LIST_PTAM
+set( SRC_LIST_SLAM_CG
     ${PROJECT_SOURCE_DIR}/src/System.cpp
     ${PROJECT_SOURCE_DIR}/src/VideoSource.cpp
     ${PROJECT_SOURCE_DIR}/src/GLWindowPangolin.cpp
@@ -58,13 +58,14 @@ set( SRC_LIST_PTAM
     ${PROJECT_SOURCE_DIR}/src/Feature2dDetector.cpp
     ${PROJECT_SOURCE_DIR}/src/Homography.cpp
     ${PROJECT_SOURCE_DIR}/src/PatchFinder.cpp )
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_PTAM})
 
-################ google test ################
+add_executable(slam_cg ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_SLAM_CG})
+
+################ Unit Test ################
 enable_testing()
-find_package(GTest REQUIRED)
+find_package(GTest)
 if(GTest_FOUND)
     include_directories(${GTEST_INCLUDE_DIRS})
+    ADD_SUBDIRECTORY(UnitTest)
+    ADD_TEST(NAME ./UnitTest/UnitTest.run COMMAND ./UnitTest/UnitTest.run)
 endif()
-ADD_SUBDIRECTORY(UnitTest)
-ADD_TEST(NAME ./UnitTest/UnitTest.run COMMAND ./UnitTest/UnitTest.run)
