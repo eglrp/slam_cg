@@ -11,29 +11,25 @@ Tracker::Tracker(JsonConfig *pJsonConfig, GLWindowPangolin *pWindowPangolin, Map
     mpPangolinWindow(pWindowPangolin),
     mMapMaker(mapmaker)
 {
-    mCurrentKF.bFixed = false;
+    kf_c_.bFixed = false;
     Reset();
 }
 
 void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 {
     mbDraw = bDraw;
-    mCurrentKF.MakeKeyFrame_Lite(imgBW);
+    kf_c_.MakeKeyFrame_Lite(imgBW);
 
-    mnFrame++;
+    id_frame_++;
 
     if(mbDraw) {
-        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, cg::RGB(1, 0, 1), 1.0f);
+        mpPangolinWindow->DrawPoints2D(kf_c_.aLevels[0].vCorners, cg::RGB(1, 0, 1), 1.0f);
     }
 
-    TrackForInitialMap();
-}
-
-void Tracker::TrackForInitialMap()
-{
+    // mono slam init stage
     if(mnInitialStage == TRAIL_TRACKING_NOT_STARTED)
     {
-        if(mnFrame==5)
+        if(id_frame_==5)
         {
             TrailTracking_Start();
             mnInitialStage = TRAIL_TRACKING_STARTED;
@@ -48,28 +44,41 @@ void Tracker::TrackForInitialMap()
             Reset();
             return;
         }
-        if(mnFrame==12)
+        if(id_frame_==12)
         {
-            std::vector<std::pair<cv::Point2i, cv::Point2i> > vMatches;
+            std::vector<std::pair<cv::Point2i, cv::Point2i> > matches;
             for(std::list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
             {
-                vMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(i->ptInitialPos,i->ptCurrentPos));
+                matches.push_back(std::pair<cv::Point2i, cv::Point2i>(i->ptInitialPos,i->ptCurrentPos));
             }
-            mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);
+            mMapMaker.InitFromStereo(kf_first_, kf_c_, matches, se3_cw_);
+            id_keyframe_last_ = id_frame_;
             mnInitialStage = TRAIL_TRACKING_COMPLETE;
         }
     }
+    if(mnInitialStage != TRAIL_TRACKING_COMPLETE)
+        return;
+
+    // TODO[cg]: tracking
+
+    bool is_kf_c1 = (id_frame_ - id_keyframe_last_) > 5;
+
+    if(is_kf_c1) {
+
+    }
+
+    id_keyframe_last_ = id_frame_;
 }
 
 void Tracker::TrailTracking_Start()
 {
-    mCurrentKF.MakeKeyFrame_Rest();
-    mFirstKF = mCurrentKF;
+    kf_c_.MakeKeyFrame_Rest();
+    kf_first_ = kf_c_;
 
     std::vector<std::pair<double,cv::Point2i> > vCornersAndSTScores;
-    for(unsigned int i=0; i<mCurrentKF.aLevels[0].vCandidates.size(); i++)
+    for(unsigned int i=0; i<kf_c_.aLevels[0].vCandidates.size(); i++)
     {
-        Candidate &c = mCurrentKF.aLevels[0].vCandidates[i];
+        Candidate &c = kf_c_.aLevels[0].vCandidates[i];
         vCornersAndSTScores.push_back(std::pair<double,cv::Point2i>(c.dSTScore, c.ptLevelPos));
     }
 
@@ -80,14 +89,14 @@ void Tracker::TrailTracking_Start()
     for(unsigned int i = 0; i<vCornersAndSTScores.size() && nToAdd > 0; i++)
     {
         Trail t;
-        t.mPatch.SampleFromImage(mCurrentKF.aLevels[0].im, vCornersAndSTScores[i].second);
+        t.mPatch.SampleFromImage(kf_c_.aLevels[0].im, vCornersAndSTScores[i].second);
         t.ptInitialPos = vCornersAndSTScores[i].second;
         t.ptCurrentPos = t.ptInitialPos;
         mlTrails.push_back(t);
         nToAdd--;
     }
 
-    mPreviousFrameKF = mFirstKF;
+    kf_p_ = kf_first_;
 }
 
 int Tracker::TrailTracking_Advance()
@@ -95,8 +104,8 @@ int Tracker::TrailTracking_Advance()
     int nGoodTrails = 0;
     int nMaxSSD = mpJsonConfig->GetInt("Tracker.MiniPatchMaxSSD");
     MiniPatch BackwardsPatch;
-    Level &lCurrentFrame = mCurrentKF.aLevels[0];
-    Level &lPreviousFrame = mPreviousFrameKF.aLevels[0];
+    Level &lCurrentFrame = kf_c_.aLevels[0];
+    Level &lPreviousFrame = kf_p_.aLevels[0];
 
     for(std::list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end();)
     {
@@ -138,13 +147,14 @@ int Tracker::TrailTracking_Advance()
         i = next;
     }
 
-    mPreviousFrameKF = mCurrentKF;
+    kf_p_ = kf_c_;
     return nGoodTrails;
 }
 
 void Tracker::Reset()
 {
-    mnFrame = 0;
+    id_frame_ = 0;
+    id_keyframe_last_ = 0;
     mnInitialStage = TRAIL_TRACKING_NOT_STARTED;
     mlTrails.clear();
 }

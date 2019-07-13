@@ -29,19 +29,19 @@ public:
 
 private:
     bool mbDraw;
-    int mnFrame;
-    KeyFrame mCurrentKF;
-    KeyFrame mFirstKF;
-    KeyFrame mPreviousFrameKF;
+    int id_frame_;
+    int id_keyframe_last_;
+    KeyFrame kf_first_;
+    KeyFrame kf_c_; // current key frame
+    KeyFrame kf_p_; // previous key frame
     std::list<Trail> mlTrails;
     enum{TRAIL_TRACKING_NOT_STARTED,TRAIL_TRACKING_STARTED,TRAIL_TRACKING_COMPLETE} mnInitialStage;
 
     JsonConfig *mpJsonConfig;
     GLWindowPangolin *mpPangolinWindow;
     MapMaker &mMapMaker;
-    Sophus::SE3 mse3CamFromWorld;
+    Sophus::SE3 se3_cw_;
 
-    void TrackForInitialMap();
     void TrailTracking_Start();
     int TrailTracking_Advance();
 

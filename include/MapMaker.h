@@ -17,6 +17,9 @@ public:
                         std::vector<std::pair<cv::Point2i, cv::Point2i> > &vTrailMatches,
                         Sophus::SE3 &se3CameraPos);
 
+public:
+    std::vector<Eigen::Vector3d> v_mappoints_;
+
 private:
     ATANCamera mCamera;
     double mdWiggleScale;

@@ -25,7 +25,7 @@ MapMaker::MapMaker(const ATANCamera &cam):
 bool MapMaker::InitFromStereo(
         KeyFrame &kFirst, KeyFrame &kSecond,
         std::vector<std::pair<cv::Point2i, cv::Point2i> > &vTrailMatches,
-        Sophus::SE3 &se3CameraPos) {
+        Sophus::SE3 &se3_cw) {
     mdWiggleScale = 0.1;
 
     mCamera.SetImageSize(cv::Point2f(640, 480));
@@ -50,7 +50,7 @@ bool MapMaker::InitFromStereo(
     if (cg::RET_FAILED == homo.Compute(vMatches, se3_homo))
         return false;
 
-    std::cout << "se3_homo: \n" << se3_homo.matrix() << std::endl;
+    std::cout << "SE3 from Homography: \n" << se3_homo.matrix() << std::endl;
 
     Eigen::Vector3d translation = se3_homo.translation();
     double translation_norm2 = std::sqrt(translation.dot(translation));
@@ -59,12 +59,15 @@ bool MapMaker::InitFromStereo(
     }
     se3_homo.translation() = translation / translation_norm2 * mdWiggleScale;
 
-    std::cout << "ptW:" << std::endl;
+    se3_cw = se3_homo;
+    std::cout << "init SE3: \n" << se3_cw.matrix() << std::endl;
+
     for (unsigned int i = 0; i < vMatches.size(); i++) {
         Eigen::Vector3d ptW = cg::MathUtility::Triangulate(se3_homo, vMatches[i].v2CamPlaneSecond,
                                                            vMatches[i].v2CamPlaneFirst);
-        std::cout << "pt: \n" << vMatches[i].v2CamPlaneFirst << ",\n" << ptW << std::endl;
+        v_mappoints_.push_back(ptW);
     }
+    std::cout << "init map points size: " << v_mappoints_.size() << std::endl;
 
     return true;
 }
